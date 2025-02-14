@@ -15,36 +15,37 @@ export const { handlers, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (user) {
-        const dbUser = await prisma.user.upsert({
-          where: { email: user.email! },
-          update: {
-            name: user.name as string,
-            image: user.image,
-            emailVerified: new Date(),
-          },
-          create: {
-            email: user.email!,
-            name: user.name!,
-            image: user.image,
-            emailVerified: new Date(),
-            password: "",
-          },
-        });
-
-        // Add user data to token
-        token.id = dbUser.id;
-        token.email = dbUser.email;
-        token.name = dbUser.name;
-        token.picture = dbUser.image;
+        if (account?.provider === "google") {
+          const dbUser = await prisma.user.upsert({
+            where: { email: user.email! },
+            update: {
+              name: user.name as string,
+              image: user.image,
+              emailVerified: new Date(),
+            },
+            create: {
+              email: user.email!,
+              name: user.name!,
+              image: user.image,
+              emailVerified: new Date(),
+              password: "",
+            },
+          });
+          token.id = dbUser.id;
+        } else {
+          token.id = user.id;
+        }
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        // Add user data from token to session
         session.user.id = token.id as string;
         session.user.email = token.email as string;
-        session.user.name = token.name;
+        session.user.name = token.name as string;
         session.user.image = token.picture as string;
       }
       return session;

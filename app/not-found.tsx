@@ -9,7 +9,7 @@ const NotFoundPage = () => {
         <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
         <h2 className="text-2xl font-semibold mb-4">Not Found</h2>
         <p className="text-muted-foreground mb-8 max-w-md">
-          Feeling lost? Let's get you back on track.
+          Feeling lost? Let&apos;s get you back on track.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link

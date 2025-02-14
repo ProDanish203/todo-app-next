@@ -7,12 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
 import { z } from "zod";
 import { loginSchema } from "@/validations/auth.validation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { PasswordInput } from "@/components/form/PasswordInput";
 import { FloatingInput } from "@/components/form/FloatingInput";
 import { signIn } from "next-auth/react";
@@ -26,16 +24,14 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const { mutateAsync } = useMutation({
-    mutationFn: async () => {},
-  });
-
   const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = async (data) => {
-    // const response = await mutateAsync(data);
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+    });
   };
 
   const handleGoogleLogin = async () => {
-    // Login with google
     await signIn("google");
   };
 
